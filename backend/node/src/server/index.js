@@ -49,7 +49,7 @@ const server = app.listen(port, err => {
         console.log(`Error occurred initializing Express server, ${err.message}`)
     }
     else {
-        console.log(`Now listening on port ${server.address().port}`)
+        console.log(`Now listening on port ➡️ ${server.address().port}`)
     }
 });
 
