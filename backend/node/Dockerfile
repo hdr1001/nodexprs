@@ -17,20 +17,37 @@
 #
 ##
 
+# https://docs.docker.com/reference/dockerfile/#arg
 ARG NODE_VER=18.20
-ARG PLATFORM_VER=alpine3.19
+ARG BASE_IMG=alpine3.19
 
-FROM node:${NODE_VER}-${PLATFORM_VER}
+# FROM initializes a new build stage & sets the base image
+# https://docs.docker.com/reference/dockerfile/#from
+FROM node:${NODE_VER}-${BASE_IMG}
 
-# App directory
+# Use production (instead of development) node environment by default
+# https://docs.docker.com/reference/dockerfile/#env
+ENV NODE_ENV=production
+
+# Set the working directory
+# https://docs.docker.com/reference/dockerfile/#workdir
 WORKDIR /usr/src/app/
 
 # Install app dependencies
+# https://docs.docker.com/reference/dockerfile/#run
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install
+
+# Run the Docker containers as (non-root) user node
+# https://docs.docker.com/reference/dockerfile/#user
+USER node
 
 # Deliver source code
-COPY src/ ./src/
+# https://docs.docker.com/reference/dockerfile/#copy
+COPY --chown=node:node src/ ./src/
+
+# https://docs.docker.com/reference/dockerfile/#expose
+EXPOSE 8080
 
 # Start application
-CMD [ "npm", "run", "prod" ]
+CMD [ "npm", "start" ]
