@@ -36,7 +36,11 @@ WORKDIR /usr/src/app/
 # Install app dependencies
 # https://docs.docker.com/reference/dockerfile/#run
 COPY package*.json ./
-RUN npm install
+
+RUN \
+  --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm ci --only=production
 
 # Run the Docker containers as (non-root) user node
 # https://docs.docker.com/reference/dockerfile/#user
