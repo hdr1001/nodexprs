@@ -5,14 +5,14 @@ Node Express project incl back- &amp; frontend
 
 `cd backend/node`
 
-`docker build -t nodexprs-dkr-img .`
+`docker build --target production -t nodexprs-dkr-img-prod .`
 
-`docker run -itd --rm -p 8080:8080 --name nodexprs-dkr-cntnr nodexprs-dkr-img`
+`docker run -itd --rm -p 8080:8080 --name nodexprs-dkr-cntnr-prod nodexprs-dkr-img-prod`
 
 `docker ps -a`
 
-`docker container logs nodexprs-dkr-cntnr`
+`docker container logs nodexprs-dkr-cntnr-prod`
 
 `curl http://localhost:8080/about`
 
-`docker kill --signal=SIGINT nodexprs-dkr-cntnr`
+`docker kill --signal=SIGINT nodexprs-dkr-cntnr-prod`

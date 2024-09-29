@@ -25,10 +25,10 @@ import routerAbout from './routes/about.js';
 
 const app = express();
 
-//Application constants
-const port = 8080; //Server port
-
 app.use( express.json() );
+
+//Use port 8080 in production, 8081 otherwise
+const getServerPort = () => process.env.NODE_ENV === 'production' ? 8080 : 8081;
 
 //Application root
 app.get('/', (req, resp) => resp.json({ foo: 'bar' }));
@@ -44,7 +44,7 @@ app.use((req, resp) => {
 });
 
 //Start the Express server
-const server = app.listen(port, err => {
+const server = app.listen(getServerPort(), err => {
     if(err) {
         console.log(`Error occurred initializing Express server, ${err.message}`)
     }

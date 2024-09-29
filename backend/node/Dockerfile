@@ -17,17 +17,18 @@
 #
 ##
 
+# Based on blog written by David Abram (https://bit.ly/3XJuEAN)
+
 # https://docs.docker.com/reference/dockerfile/#arg
 ARG NODE_VER=18.20
 ARG BASE_IMG=alpine3.19
 
 # FROM initializes a new build stage & sets the base image
 # https://docs.docker.com/reference/dockerfile/#from
-FROM node:${NODE_VER}-${BASE_IMG}
+FROM node:${NODE_VER}-${BASE_IMG} AS base
 
-# Use production (instead of development) node environment by default
-# https://docs.docker.com/reference/dockerfile/#env
-ENV NODE_ENV=production
+# Use dumb-init as init-like process to handle signals properly
+RUN apk update && apk add --no-cache dumb-init
 
 # Set the working directory
 # https://docs.docker.com/reference/dockerfile/#workdir
@@ -37,6 +38,31 @@ WORKDIR /usr/src/app/
 # https://docs.docker.com/reference/dockerfile/#run
 COPY package*.json ./
 
+FROM base AS dev
+
+# Use a cache mount to cache dependencies
+RUN \
+  --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm install
+
+# Deliver source code
+# https://docs.docker.com/reference/dockerfile/#copy
+COPY src/ ./src/
+
+# https://docs.docker.com/reference/dockerfile/#expose
+EXPOSE 8081
+
+# Start application
+CMD [ "dumb-init", "node", "./src/server/index.js" ]
+
+FROM base AS production
+
+# Use production (instead of development) node environment by default
+# https://docs.docker.com/reference/dockerfile/#env
+ENV NODE_ENV=production
+
+# Use a cache mount to cache dependencies
 RUN \
   --mount=type=cache,target=/usr/src/app/.npm \
   npm set cache /usr/src/app/.npm && \
@@ -46,12 +72,10 @@ RUN \
 # https://docs.docker.com/reference/dockerfile/#user
 USER node
 
-# Deliver source code
-# https://docs.docker.com/reference/dockerfile/#copy
 COPY --chown=node:node src/ ./src/
 
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
 
 # Start application
-CMD [ "npm", "start" ]
+CMD [ "dumb-init", "node", "./src/server/index.js" ]
