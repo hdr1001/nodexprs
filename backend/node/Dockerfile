@@ -54,11 +54,14 @@ COPY src/ ./src/
 EXPOSE 8081
 
 # Start application
+# To do: can not get nodemon to run
+# CMD [ "dumb-init", "nodemon", "./src/server/index.js" ]
+# Error: [dumb-init] nodemon: No such file or directory 🤷🏻‍♂️
 CMD [ "dumb-init", "node", "./src/server/index.js" ]
 
 FROM base AS production
 
-# Use production (instead of development) node environment by default
+# Use production for environment variable NODE_ENV
 # https://docs.docker.com/reference/dockerfile/#env
 ENV NODE_ENV=production
 
