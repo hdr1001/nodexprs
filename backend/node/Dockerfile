@@ -1,4 +1,4 @@
-##
+## *********************************************************************
 #
 #  Copyright Hans de Rooij 2024
 #
@@ -15,7 +15,7 @@
 #  language governing permissions and limitations under the 
 #  License.
 #
-##
+## *********************************************************************
 
 # Based on blog written by David Abram (https://bit.ly/3XJuEAN)
 
