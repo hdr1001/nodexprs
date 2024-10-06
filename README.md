@@ -30,3 +30,13 @@ The development target
 `docker run -itd --rm -p 8081:8081 --name nodexprs-dkr-cntnr-dev nodexprs-dkr-img-dev`
 
 `curl http://localhost:8081/about`
+
+Postgres 16 Docker container
+
+`cd backend/postgres`
+
+`docker rmi pg16`
+
+`docker build -t pg16 .`
+
+`docker run -itd --rm -p 5432:5432 -e POSTGRES_PASSWORD=pwd --name pg16-dkr-img pg16`

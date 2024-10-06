@@ -38,13 +38,14 @@ WORKDIR /usr/src/app/
 # https://docs.docker.com/reference/dockerfile/#run
 COPY package*.json ./
 
+# Multi-stage environment dev for development
 FROM base AS dev
 
 # Use a cache mount to cache dependencies
 RUN \
-  --mount=type=cache,target=/usr/src/app/.npm \
-  npm set cache /usr/src/app/.npm && \
-  npm install
+  --mount=type=cache,target=/root/.npm \
+  npm set cache /root/.npm && \
+  npm ci --include=dev
 
 # Deliver source code
 # https://docs.docker.com/reference/dockerfile/#copy
@@ -53,12 +54,10 @@ COPY src/ ./src/
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8081
 
-# Start application
-# To do: can not get nodemon to run
-# CMD [ "dumb-init", "nodemon", "./src/server/index.js" ]
-# Error: [dumb-init] nodemon: No such file or directory 🤷🏻‍♂️
-CMD [ "dumb-init", "node", "./src/server/index.js" ]
+# Start the application using nodemon
+CMD [ "dumb-init", "npm", "run", "dev" ]
 
+# Multi-stage environment for production
 FROM base AS production
 
 # Use production for environment variable NODE_ENV
@@ -67,8 +66,8 @@ ENV NODE_ENV=production
 
 # Use a cache mount to cache dependencies
 RUN \
-  --mount=type=cache,target=/usr/src/app/.npm \
-  npm set cache /usr/src/app/.npm && \
+--mount=type=cache,target=/root/.npm \
+  npm set cache /root/.npm && \
   npm ci --only=production
 
 # Run the Docker containers as (non-root) user node
