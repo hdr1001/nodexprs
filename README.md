@@ -11,11 +11,11 @@ Remove the production image if necessary
 
 `docker rmi nodexprs-dkr-img-prod`
 
-`docker build --target production -t nodexprs-dkr-img-prod .`
+`docker build --target production --tag nodexprs-dkr-img-prod .`
 
-`docker run -itd --rm -p 8080:8080 --name nodexprs-dkr-cntnr-prod nodexprs-dkr-img-prod`
+`docker run --detach --publish 8080:8080 --name nodexprs-dkr-cntnr-prod nodexprs-dkr-img-prod`
 
-`docker ps -a`
+`docker ps -all`
 
 `docker container logs nodexprs-dkr-cntnr-prod`
 
@@ -25,9 +25,9 @@ Remove the production image if necessary
 
 The development target
 
-`docker build --target dev -t nodexprs-dkr-img-dev .`
+`docker build --target dev --tag nodexprs-dkr-img-dev .`
 
-`docker run -itd --rm -p 8081:8081 --name nodexprs-dkr-cntnr-dev nodexprs-dkr-img-dev`
+`docker run --detach --publish 8081:8081 --name nodexprs-dkr-cntnr-dev nodexprs-dkr-img-dev`
 
 `curl http://localhost:8081/about`
 
