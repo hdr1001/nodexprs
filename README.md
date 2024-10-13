@@ -35,8 +35,10 @@ Postgres 16 Docker container
 
 `cd backend/postgres`
 
+`docker volume create pg-data`
+
 `docker rmi pg16`
 
 `docker build -t pg16 .`
 
-`docker run -itd --rm -p 5432:5432 -e POSTGRES_PASSWORD=pwd --name pg16-dkr-img pg16`
+`docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=pwd -v pg-data:/var/lib/postgresql/data --name pg16-dkr-cntnr pg16`
