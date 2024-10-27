@@ -53,13 +53,18 @@ const server = app.listen(getServerPort(), err => {
     }
 });
 
-//Handle SIGINT (i.e. Ctrl+C) interrupt
-process.on('SIGINT', () => {
-    console.log('\nServer received SIGINT');
+//Graceful shutdown
+function gracefulShutdown() {
+    console.log('Express server is shutting down');
 
     server.close(() => {
-        console.log('Express server closed');
+        console.log('Express server now closed');
+
+        //Close or release, if needed, any connections and/or resources here
 
         process.exit(0);
     });
-});
+}
+
+process.on('SIGTERM', () => { console.log('\nServer received SIGTERM'); gracefulShutdown(); });
+process.on('SIGINT',  () => { console.log('\nServer received SIGINT');  gracefulShutdown(); });
