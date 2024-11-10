@@ -22,6 +22,7 @@
 
 import express from 'express';
 import routerAbout from './routes/about.js';
+import routerQryDb from './routes/qrydb.js';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.get('/', (req, resp) => resp.json({ foo: 'bar' }));
 
 //Implementation of the application routers
 app.use('/about', routerAbout);
+app.use('/qry', routerQryDb);
 
 //An HTTP request catch-all
 app.use((req, resp) => {
